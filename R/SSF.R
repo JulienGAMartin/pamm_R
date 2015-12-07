@@ -126,37 +126,48 @@ function (numsim, tss, nbstep = 10, randompart, fixed = c(0,
             db$rand.sl <- rep(x[, 2], mg.r[k, 2])[1:N]
             db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF + 
                 db$error
-            db$dummy <- rep(1,nrow(db))
-            m.lmer <- lmer(Y ~ EF + (1 | dummy), data = db)
-            m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db)
-		#, control = list(maxIter = 200, msMaxIter = 200))
-            pvint <- pchisq(-2 * (logLik(m.lmer, REML = TRUE) - 
-                logLik(m1.lmer, REML = TRUE))[[1]], 1, lower.tail = FALSE)
-            powerint[i] <- pvint <= 0.05
-            pvalint[i] <- pvint
-            m2.lmer <- lmer(Y ~ EF + (EF | ID), data = db)
-		 # , control = list(maxIter = 200,msMaxIter = 200))
-            anosl <- anova(m2.lmer, m1.lmer, refit=FALSE)
-            powersl[i] <- anosl[2, "Pr(>Chisq)"] <= 0.05
-            pvalsl[i] <- anosl[2, "Pr(>Chisq)"]
+                
+            m1.lmer <- try(lmer(Y ~ EF + (1 | ID), data = db),TRUE)
+            if (class(m1.lmer)!="merModLmerTest")  {          	
+            	powerint[i] <- NA
+            	pvalint[i] <- NA
+            }
+            else{           
+           	lrt1 <- rand(m1.lmer)
+            	pvint <- lrt1[[1]][1,3]
+            	powerint[i] <- pvint <= 0.05
+            	pvalint[i] <- pvint
+            }
+
+            m2.lmer <- try(lmer(Y ~ EF + (EF | ID), data = db),TRUE)
+            if (class(m2.lmer)!="merModLmerTest")  {          	
+            	powerint[i] <- NA
+            	pvalint[i] <- NA
+            }
+            else{ 
+            	anosl <- anova(m2.lmer, m1.lmer, refit=FALSE)
+            	powersl[i] <- anosl[2, "Pr(>Chisq)"] <= 0.05
+            	pvalsl[i] <- anosl[2, "Pr(>Chisq)"]
+            }
         }
+## add number of models dropped for estimates
         kk <- kk + 1
         iD[kk] <- mg.r[k, 1]
         rp[kk] <- round(N/mg.r[k, 1], digits = 2)
         ss[kk] <- N
-        slCIpow <- ci(powersl)
+        slCIpow <- ci(powersl, na.rm=TRUE)
         slpowestimate[kk] <- slCIpow["Estimate"]
         slpowCIlower[kk] <- slCIpow["CI lower"]
         slpowCIupper[kk] <- slCIpow["CI upper"]
-        slCIpval <- ci(pvalsl)
+        slCIpval <- ci(pvalsl, na.rm=TRUE)
         slpvalestimate[kk] <- slCIpval["Estimate"]
         slpvalCIlower[kk] <- slCIpval["CI lower"]
         slpvalCIupper[kk] <- slCIpval["CI upper"]
-        intCIpow <- ci(powerint)
+        intCIpow <- ci(powerint, na.rm=TRUE)
         intpowestimate[kk] <- intCIpow["Estimate"]
         intpowCIlower[kk] <- intCIpow["CI lower"]
         intpowCIupper[kk] <- intCIpow["CI upper"]
-        intCIpval <- ci(pvalint)
+        intCIpval <- ci(pvalint, na.rm=TRUE)
         intpvalestimate[kk] <- intCIpval["Estimate"]
         intpvalCIlower[kk] <- intCIpval["CI lower"]
         intpvalCIupper[kk] <- intCIpval["CI upper"]

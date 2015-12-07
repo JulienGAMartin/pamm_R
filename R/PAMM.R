@@ -1,13 +1,3 @@
-ours=PAMM(numsim=10,group=c(seq(10,50,10),100),repl=c(2,4,6),
-randompart=c(0.4,0.1,0.5,0.1),fixed=c(0,1,0.7),rr=FALSE)
-plot(ours,"both")
-
-numsim=10; group=c(seq(10,50,10),100); repl=c(3,4,6);
-randompart=c(0.4,0.1,0.5,0.1); fixed=c(0,1,0.7);  n.X=NA; autocorr.X=0;
-          X.dist="gaussian"; intercept=0; heteroscedasticity=c("null"); ftype="lmer"
-
-
-
 `PAMM` <-
 function (numsim, group, repl, randompart, fixed = c(0, 1, 0), n.X=NA, autocorr.X=0,
           X.dist="gaussian", intercept=0,heteroscedasticity=c("null"),ftype="lmer",rr=TRUE) 
@@ -129,16 +119,15 @@ function (numsim, group, repl, randompart, fixed = c(0, 1, 0), n.X=NA, autocorr.
 #                }
 #                else {
 
-                     db$dummy <- c(rep(1,nrow(db)-2),2,2)
-                     m.lmer <- lmer(Y ~ EF + (1 | dummy), data = db)
                      m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db) 
-                     pvint <- pchisq(-2 * (logLik(m.lmer, REML = TRUE) - 
-                     logLik(m1.lmer, REML = TRUE))[[1]], 1, lower.tail = FALSE)
+                     lrt1 <- rand(m1.lmer)
+                     pvint <- lrt1[[1]][1,3]
                      powerint[i] <- pvint <= 0.05
                      pvalint[i] <- pvint
                      if (rr==TRUE) {
-                     	m2.lmer <- lmer(Y ~ EF + (EF | ID), data = db) 
-                     	anosl <- anova(m2.lmer, m1.lmer,refit=FALSE)
+#                     	m2.lmer1 <- lmer(Y ~ EF + (1|ID) + (0 + EF|ID), data = db)                     
+                     	m2.lmer2 <- lmer(Y ~ EF + (EF | ID), data = db) 
+                     	anosl <- anova(m2.lmer2, m1.lmer,refit=FALSE)
                      	powersl[i] <- anosl[2, "Pr(>Chisq)"] <= 0.05
                      	pvalsl[i] <- anosl[2, "Pr(>Chisq)"]
                      }

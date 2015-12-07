@@ -3,7 +3,7 @@ exportPattern(".")
 
 # Import all packages listed as Imports or Depends
 import(
-  lme4,
+  lmerTest,
   lattice
 )
 
