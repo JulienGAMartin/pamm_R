@@ -1,5 +1,5 @@
 `plot.PAMM` <-
-function (x, graphtype = "both", nbgroup, nbrepl, phi=25, theta=30, ticktype="simple",nbcol=100, color="grey",coltype="restricted",...) 
+function (x, graphtype = "both", nbgroup, nbrepl, phi=25, theta=30, ticktype="detailed",nticks= 4, nbcol=100, color="grey",coltype="restricted",...) 
 {
     if (!inherits(x, "PAMM")) 
         stop("use only with \"PAMM\" objects")
@@ -71,7 +71,7 @@ function (x, graphtype = "both", nbgroup, nbrepl, phi=25, theta=30, ticktype="si
     }
     if (graphtype == "both") {
 
-      par(mfrow = c(2, 2))
+      par(mfrow = c(2, 2),mar=c(1.5,1.5,1.5,1.5))
       X <- unique(x$nb.ID)
       Y <- unique(x$nb.repl)
       z <- c("int.pval", "int.power","sl.pval","sl.power")
@@ -89,7 +89,7 @@ function (x, graphtype = "both", nbgroup, nbrepl, phi=25, theta=30, ticktype="si
      	else if (coltype == "restricted") facetcol <- cut(zfacet,nbcol)
       	persp(X, Y, Z, 
             col = color[facetcol], zlim = c(0, 1),
-            phi=phi, theta=theta, ticktype=ticktype,
+            phi=phi, theta=theta, ticktype=ticktype, nticks=nticks,
             xlab = "group", ylab = "repl", zlab = "", main=main[i]) 
       }
     }
