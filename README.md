@@ -13,5 +13,6 @@ variation in reaction norms in field and experimental studies: a power
 analysis of random regression models. Methods in Ecology and Evolution. 
 
 ###Note
-the code is broken for the moment and should be updated soon
+Code as been fixed to work with the latest version of lme4 and lmerTest packages
+implementation of better simulation function based on simulate merMod is in development
 

@@ -1,5 +1,5 @@
 `plot.PAMM` <-
-function (x, graphtype = "both", nbgroup, nbrepl, ...) 
+function (x, graphtype = "both", nbgroup, nbrepl, phi=25, theta=30, ticktype="simple",nbcol=100, color="grey",coltype="restricted",...) 
 {
     if (!inherits(x, "PAMM")) 
         stop("use only with \"PAMM\" objects")
@@ -70,22 +70,28 @@ function (x, graphtype = "both", nbgroup, nbrepl, ...)
             nbgroup], lty = 2)
     }
     if (graphtype == "both") {
-      x11()
-      plot(wireframe(int.pval~nb.ID+nb.repl,x,colorkey=FALSE,drape=TRUE,scales = list(arrows = FALSE),
-      xlab="group",ylab="repl", main="Intercept P-value",
-          screen = list(z =-50, x = -70, y = 0)))    
-      x11() 
-      plot(wireframe(int.power~nb.ID+nb.repl,x,colorkey=FALSE,drape=TRUE,scales = list(arrows = FALSE),
-      xlab="group",ylab="repl", main="Intercept Power Calculations",
-          screen = list(z =-50, x = -70, y = 0))) 
-      x11()
-      plot(wireframe(sl.pval~nb.ID+nb.repl,x,colorkey=FALSE,drape=TRUE,scales = list(arrows = FALSE),
-      xlab="group",ylab="repl", main="Slope P-value",
-          screen = list(z =-50, x = -70, y = 0)))
-      x11()
-      plot(wireframe(sl.power~nb.ID+nb.repl,x,colorkey=FALSE,drape=TRUE,scales = list(arrows = FALSE),
-      xlab="group",ylab="repl", main="Slope Power Calculations",
-          screen = list(z =-50, x = -70, y = 0)))
+
+      par(mfrow = c(2, 2))
+      X <- unique(x$nb.ID)
+      Y <- unique(x$nb.repl)
+      z <- c("int.pval", "int.power","sl.pval","sl.power")
+      main <- c("Intercept P-value","Intercept Power","Slope P-value","Slope Power")
+      if (color == "grey") color <- grey(0:nbcol/nbcol)
+      else if (color == "cm") color <- cm.colors(nbcol)
+      else if (color == "rainbow") color <- rainbow(nbcol)
+      
+      for (i in 1:4) {
+     	Z <- matrix(x[,z[i]], nrow = length(X), ncol = length(Y))
+     	nrz <- nrow(Z)
+      	ncz <- ncol(Z)
+      	zfacet <- (Z[-1, -1] + Z[-1, -ncz] + Z[-nrz, -1] + Z[-nrz, -ncz]) / 4
+     	if (coltype == "0-1") facetcol <- facetcol <- cut(zfacet, seq(0,1,1/nbcol))
+     	else if (coltype == "restricted") facetcol <- cut(zfacet,nbcol)
+      	persp(X, Y, Z, 
+            col = color[facetcol], zlim = c(0, 1),
+            phi=phi, theta=theta, ticktype=ticktype,
+            xlab = "group", ylab = "repl", zlab = "", main=main[i]) 
+      }
     }
     if (graphtype == "both.dyn") {
         open3d()
