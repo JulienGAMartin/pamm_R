@@ -143,7 +143,7 @@ function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05,
 				else {
                      	powersl[i] <- 0
                 		pvalsl[i] <- 1
-                    	#m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db) 
+                    	m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db) 
                      	lrt1 <- rand(m1.lmer)
                      	pvint <- lrt1[[1]][1,3]
                      	powerint[i] <- pvint <= 0.05

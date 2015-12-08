@@ -135,7 +135,7 @@ function (numsim, group, repl, randompart, fixed = c(0, 1, 0), n.X=NA, autocorr.
                      pvint <- lrt1[[1]][1,3]
                      powerint[i] <- pvint <= 0.05
                      pvalint[i] <- pvint
-                     if (rr==TRUE) {
+                     if (VS > 0) {
 #                     	m2.lmer1 <- lmer(Y ~ EF + (1|ID) + (0 + EF|ID), data = db)                     
                      	m2.lmer2 <- lmer(Y ~ EF + (EF | ID), data = db) 
                      	anosl <- anova(m2.lmer2, m1.lmer,refit=FALSE)
@@ -166,7 +166,7 @@ function (numsim, group, repl, randompart, fixed = c(0, 1, 0), n.X=NA, autocorr.
             intpvalCIupper[kk] <- intCIpval["CI upper"]
         }
     }
-	if (rr == TRUE) {
+	if (VS > 0) {
     sim.sum <- data.frame(nb.ID = iD, nb.repl = rp, int.pval = intpvalestimate, 
         CIlow.ipv = intpvalCIlower, CIup.ipv = intpvalCIupper, 
         int.power = intpowestimate, CIlow.ipo = intpowCIlower, 

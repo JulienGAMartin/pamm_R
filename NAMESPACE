@@ -8,5 +8,9 @@ import(
 
 importFrom(mvtnorm,rmvnorm) 
 importFrom(gmodels,ci) 
-importFrom(lattice,wireframe) 
+importFrom(lattice,wireframe)
+
+S3method(plot, EAMM)
+S3method(plot, PAMM)
+S3method(plot, SSF)
 

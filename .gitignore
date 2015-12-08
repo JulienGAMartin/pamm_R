@@ -6,3 +6,5 @@ working_file*
 *.Rproj
 *.RData
 test.r
+*.Rproj.user
+*LICENSE
