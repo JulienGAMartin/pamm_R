@@ -14,5 +14,6 @@ analysis of random regression models. Methods in Ecology and Evolution.
 
 ###Note
 Code as been fixed to work with the latest version of lme4 and lmerTest packages
-implementation of better simulation function based on simulate merMod is in development
+Suggestiosn for new functionality are welcome
+Code need to be cleaned a bit.
 
