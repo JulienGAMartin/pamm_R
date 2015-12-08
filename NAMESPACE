@@ -3,8 +3,7 @@ exportPattern(".")
 
 # Import all packages listed as Imports or Depends
 import(
-  lmerTest,
-  lattice
+  lmerTest
 )
 
 importFrom(mvtnorm,rmvnorm) 

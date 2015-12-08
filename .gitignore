@@ -2,3 +2,7 @@
 *.Rhistory
 *~
 working_file*
+*.Rproj.user
+*.Rproj
+*.RData
+test.r

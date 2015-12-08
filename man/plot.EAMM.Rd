@@ -7,7 +7,7 @@
 }
 
 \usage{
-\method{plot}{EAMM}(x, graphtype = "both", vi, vs,\dots)
+\method{plot}{EAMM}(x, graphtype = "both", vi, vs, fun3D="wireframe", \dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

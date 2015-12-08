@@ -7,7 +7,7 @@
 }
 
 \usage{
-\method{plot}{PAMM}(x, graphtype = "both", nbgroup, nbrepl,\dots)
+\method{plot}{PAMM}(x, graphtype = "both", nbgroup, nbrepl, fun3D="wireframe",\dots)
 }
 
 \arguments{
