@@ -1,5 +1,5 @@
 `plot.EAMM` <-
-function (x, graphtype = "both", vi, vs, ...) 
+function (x, graphtype = "both", vi, vs, fun3D="wireframe",...) 
 {
     if (!inherits(x, "EAMM")) 
         stop("use only with \"EAMM\" objects")
@@ -56,33 +56,34 @@ function (x, graphtype = "both", vi, vs, ...)
         lines(x$VS[x$VI == vi], x$CIlow.slpo[x$VI == vi], lty = 2)
     }
     if (graphtype == "both") {
+    if (fun3D == "wireframe"){
       par.set <- list(axis.line = list(col = "transparent"), clip = list(panel = "off"))
         p1 <- wireframe(int.pval ~ VI + VS, x, colorkey = FALSE, 
             drape = TRUE, scales = list(arrows = FALSE, distance = c(2,2,2)), xlab = "Var.Intercept", 
             ylab = "Var.Slope", main = "Intercept P-value",
-            zlab = list ("int.pval", rot =90), 
+            zlab = list ("P-value", rot =90), 
             screen = list(z = -50, x = -70, y = 0), par.settings = par.set)
         p2 <- wireframe(int.power ~ VI + VS, x, colorkey = FALSE, 
             drape = TRUE, scales = list(arrows = FALSE, distance = c(2,2,2)), xlab = "Var.Intercept", 
-            ylab = "Var.Slope", main = "Intercept Power Calculations", 
-            zlab = list ("int.pval", rot =90), 
+            ylab = "Var.Slope", main = "Intercept Power", 
+            zlab = list ("Power", rot =90), 
             screen = list(z = -50, x = -70, y = 0), par.settings = par.set)
         p3 <- wireframe(sl.pval ~ VI + VS, x, colorkey = FALSE, 
             drape = TRUE, scales = list(arrows = FALSE, distance = c(2,2,2)), xlab = "Var.Intercept", 
             ylab = "Var.Slope", main = "Slope P-value", 
-            zlab = list ("int.pval", rot =90), 
+            zlab = list ("P-value", rot =90), 
             screen = list(z = -50, x = -70, y = 0), par.settings = par.set)
         p4 <- wireframe(sl.power ~ VI + VS, x, colorkey = FALSE, 
             drape = TRUE, scales = list(arrows = FALSE, distance = c(2,2,2)), xlab = "Var.Intercept", 
-            ylab = "Var.Slope", main = "Slope Power Calculations", 
-            zlab = list ("int.pval", rot =90), 
+            ylab = "Var.Slope", main = "Slope Power", 
+            zlab = list ("power", rot =90), 
             screen = list(z = -50, x = -70, y = 0), par.settings = par.set)
       print(p1, split=c(1,1,2,2),more =TRUE)
       print(p2, split=c(1,2,2,2),more =TRUE)
       print(p3, split=c(2,1,2,2),more =TRUE)
       print(p4, split=c(2,2,2,2))
     }
-    if (graphtype == "both.dyn") {
+    if (fun3D == "open3d") {
         open3d()
         bg3d("white")
         material3d(col = "white")
@@ -112,4 +113,5 @@ function (x, graphtype = "both", vi, vs, ...)
             col = rainbow(10), box = FALSE, zlim = c(0, 1), xlab = "VI", 
             ylab = "VS", zlab = "slope.power")
     }
+}
 }

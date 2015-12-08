@@ -1,38 +1,39 @@
 `PAMM` <-
 function (numsim, group, repl, randompart, fixed = c(0, 1, 0), n.X=NA, autocorr.X=0,
-          X.dist="gaussian", intercept=0,heteroscedasticity=c("null"),ftype="lmer",rr=TRUE) 
+          X.dist="gaussian", intercept=0,heteroscedasticity=c("null"),ftype="lmer",
+          mer.sim=FALSE)
 {
-    VI <- as.numeric(randompart[[1]])
-    VS <- as.numeric(randompart[[2]])
-    VR <- as.numeric(randompart[[3]])
+    VI <- randompart[1]
+    VS <- randompart[2]
+    VR <- randompart[3]
     if (length(randompart) == 5) {
-        if (randompart[[5]] == "cor") {
-            CorIS <- as.numeric(randompart[[4]])
+        if (randompart[5] == "cor") {
+            CorIS <- randompart[4]
             CovIS <- CorIS * sqrt(VI) * sqrt(VS)
         }
-        else if (randompart[[5]] == "cov") {
-            CovIS <- as.numeric(randompart[[4]])
+        else if (randompart[5] == "cov") {
+            CovIS <-randompart[4]
         }
         
     }
     else {
-        CorIS <- as.numeric(randompart[[4]])
+        CorIS <- randompart[4]
         CovIS <- CorIS * sqrt(VI) * sqrt(VS)
     }
     sigma <- matrix(c(VI, CovIS, CovIS, VS), ncol = 2)
 
-    Hetero <- heteroscedasticity[[1]]
+    Hetero <- heteroscedasticity[1]
     het <- as.numeric(heteroscedasticity[-1])
 
     if (X.dist=="gaussian") {
-        FM <- fixed[[1]]
-        FV <- fixed[[2]]
-        FE <- fixed[[3]]
+        FM <- fixed[1]
+        FV <- fixed[2]
+        FE <- fixed[3]
     }
     if (X.dist=="unif") {
-        Xmin <- fixed[[1]]
-        Xmax <- fixed[[2]]
-        FE <- fixed[[3]]
+        Xmin <- fixed[1]
+        Xmax <- fixed[2]
+        FE <- fixed[3]
     }
 
     iD <- numeric(length(repl) * length(group))
@@ -90,21 +91,31 @@ function (numsim, group, repl, randompart, fixed = c(0, 1, 0), n.X=NA, autocorr.
                 }
                 else { EF <- ef }
 
-                er <- numeric(length(N))
-                if (Hetero=="null") (er <- rnorm(N, intercept, sqrt(VR)))
-                if (Hetero=="power") (
-                for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*(het[1]+abs(EF[n])^het[2])^2))} )
-                if (Hetero=="exp")  (
-                for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*exp(2*het[1]*EF[n])))} )
-
-                db <- data.frame(ID = rep(1:k, r), obs = 1:N, 
-                  error = er, EF = EF)
-                x <- rmvnorm(k, c(0, 0), sigma, method = "svd")
-                db$rand.int <- rep(x[, 1], r)
-                db$rand.sl <- rep(x[, 2], r)
-                db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF + 
-                  db$error
-
+                db <- data.frame(ID = rep(1:k, r), obs = 1:N, EF = EF)
+                if (mer.sim == TRUE) {
+                	family <- gaussian
+                	sigma <- sqrt(VR)
+                	beta <- c(intercept,fixed[3])
+                	names(beta) <- c("(Intercept)","EF")
+                	theta <- as.vector(chol(var)/sigma)[c(1,3,4)]
+                	names(theta) <- c("ID.(Intercept)","ID.EF.(Intercept)","ID.EF")
+                	params <- list(beta=beta, theta= theta, sigma=sigma)
+			y <- simulate(formula(~EF + (EF | ID)),newdata=db,family=family, newparams=params)
+			db$Y <- y[,1]
+		}
+		else {
+		        er <- numeric(length(N))
+                	if (Hetero=="null") (er <- rnorm(N, intercept, sqrt(VR)))
+               		if (Hetero=="power") (
+                	for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*(het[1]+abs(EF[n])^het[2])^2))} )
+                	if (Hetero=="exp")  (
+                	for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*exp(2*het[1]*EF[n])))} )
+                	db$error <- er
+                	x <- rmvnorm(k, c(0, 0), var, method = "svd")
+               		db$rand.int <- rep(x[, 1], r)
+                	db$rand.sl <- rep(x[, 2], r)
+                	db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF + db$error		
+		}
 #                if (ftype=="lme") {
 #                m.lm <- lm(Y ~ EF, data = db)
 #                     m1.lme <- lme(Y ~ EF,random= ~1 | ID,weights=varConstPower(form=~EF), data = db) 
@@ -137,19 +148,19 @@ function (numsim, group, repl, randompart, fixed = c(0, 1, 0), n.X=NA, autocorr.
             kk <- kk + 1
             iD[kk] <- k
             rp[kk] <- r
-            slCIpow <- ci(powersl)
+            slCIpow <- ci(powersl, na.rm=TRUE)
             slpowestimate[kk] <- slCIpow["Estimate"]
             slpowCIlower[kk] <- slCIpow["CI lower"]
             slpowCIupper[kk] <- slCIpow["CI upper"]
-            slCIpval <- ci(pvalsl)
+            slCIpval <- ci(pvalsl, na.rm=TRUE)
             slpvalestimate[kk] <- slCIpval["Estimate"]
             slpvalCIlower[kk] <- slCIpval["CI lower"]
             slpvalCIupper[kk] <- slCIpval["CI upper"]
-            intCIpow <- ci(powerint)
+            intCIpow <- ci(powerint, na.rm=TRUE)
             intpowestimate[kk] <- intCIpow["Estimate"]
             intpowCIlower[kk] <- intCIpow["CI lower"]
             intpowCIupper[kk] <- intCIpow["CI upper"]
-            intCIpval <- ci(pvalint)
+            intCIpval <- ci(pvalint, na.rm=TRUE)
             intpvalestimate[kk] <- intCIpval["Estimate"]
             intpvalCIlower[kk] <- intCIpval["CI lower"]
             intpvalCIupper[kk] <- intCIpval["CI upper"]

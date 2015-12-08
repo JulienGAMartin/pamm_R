@@ -12,15 +12,19 @@
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ an EAMM object }
-  \item{graphtype}{ "VI", "VS","both" or "both.dyn"
+  \item{graphtype}{ "VI", "VS", or "both"
     "VI" give graphs with varying variance component of intercept and
     with a fixed variance component for slope specified in vs argument
     "VS" give graphs with varying variance component for slope and with a
     fixed variance component of intercept specified in vi argument
-    "both" 3-D plot using lattice package
-    "both.dyn" 3D plot using rgl package}
+    "both" 3-D plot see also fun3D argument
+    }
   \item{vi}{ VI for which plots the output. Necessary for "VS" type of graph }
   \item{vs}{ VS for which plots the output. Necessary for "VI" type of graph }
+  \item{fun3D}{plot function used to plot the 3D graph.
+  	"wireframe" uses lattice,
+  	"persp" uses  graphics
+  	and "open3d" uses rgl}
   \item{\dots}{ potentially further arguments to pass to methods }
 }
 

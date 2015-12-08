@@ -16,8 +16,8 @@ The functions are based on the "lme4" package.
   \tabular{ll}{
   Package: \tab pamm\cr
   Type: \tab Package\cr
-  Version: \tab 0.7\cr
-  Date: \tab 2010-05-20\cr
+  Version: \tab 0.9\cr
+  Date: \tab 2015-12-10\cr
   License: \tab GPL 2.00\cr
   LazyLoad: \tab yes\cr
   }
@@ -25,7 +25,7 @@ The functions are based on the "lme4" package.
 
 \author{
 Julien Martin
-Maintainer:Julien Martin \email{julien.martin2@usherbrooke.ca}
+Maintainer:Julien Martin \email{julienmartin@abdn.ac.uk}
 }
 
 \references{

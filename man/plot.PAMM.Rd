@@ -12,18 +12,29 @@
 
 \arguments{
   \item{x}{ a PAMM object }
-  \item{graphtype}{ "group", "repl", "both" or "both.dyn"
+  \item{graphtype}{ "group", "repl" or "both"
     "group" give graphs with varying number of ID and with a fixed number
       of replicates specified in nbrepl
     "repl" give graphs with varying number of replicates and with a fixed
       number of ID specified in nbgroup
-    "both" 3-D plot using lattice package. Note: useful only with multiple
+    "both" 3-D plot. see also fun3D argument. Note: useful only with multiple
       group size and multiple number of replicates.
-    "both.dyn" 3D plot using rgl package. Note: useful only with multiple group
-      size and multiple number of replicates}
+      }
   \item{nbgroup}{ number of group for which plots the output. Necessary for "repl" type of graph }
   \item{nbrepl}{ number of replicates for which plots the output. Necessary for "group" type of graph }
+  \item{fun3D}{plot function used to plot the 3D graph.
+  	"wireframe" uses lattice,
+  	"persp" uses  graphics
+  	and "open3d" uses rgl}
   \item{\dots}{ potentially further arguments to pass to methods }
+}
+
+\details{
+	Parameters phi, theta, ticktype ("simple" or "detailed"), nticks, nbcol
+	from \code{\link{persp}} function could also be specified for 3D plots.
+	In addition, color schemes ("grey", "cm.colors" and "rainbow") and 
+	coltype ("restricted" or "0-1") parameters could also be specified for
+	 3D plots.
 }
 
 \author{ Julien Martin }

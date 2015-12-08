@@ -1,6 +1,7 @@
 `plot.PAMM` <-
-function (x, graphtype = "both", nbgroup, nbrepl, phi=25, theta=30, ticktype="detailed",nticks= 4, nbcol=100, color="grey",coltype="restricted",...) 
+function (x, graphtype = "both", nbgroup, nbrepl, fun3D = "wireframe",...) 
 {
+	extra <- list(...) #not doing anything for the moment
     if (!inherits(x, "PAMM")) 
         stop("use only with \"PAMM\" objects")
     if (graphtype == "group") {
@@ -70,7 +71,38 @@ function (x, graphtype = "both", nbgroup, nbrepl, phi=25, theta=30, ticktype="de
             nbgroup], lty = 2)
     }
     if (graphtype == "both") {
-
+    if (fun3D == "wireframe") {
+      par.set <- list(axis.line = list(col = "transparent"), clip = list(panel = "off"))
+	p1<- wireframe(int.pval~nb.ID+nb.repl,x,colorkey=FALSE,drape=TRUE,scales = list(arrows = FALSE, distance = c(2,2,2)),
+      xlab="group",ylab="repl", main="Intercept P-value",
+            zlab = list ("P-value", rot =90), 
+            screen = list(z = -50, x = -70, y = 0), par.settings = par.set)    
+      p2 <- wireframe(int.power~nb.ID+nb.repl,x,colorkey=FALSE,drape=TRUE, scales = list(arrows = FALSE, distance = c(2,2,2)),
+      xlab="group",ylab="repl", main="Intercept Power",
+            zlab = list ("Power", rot =90), 
+            screen = list(z = -50, x = -70, y = 0), par.settings = par.set)
+      p3 <- wireframe(sl.pval~nb.ID+nb.repl,x,colorkey=FALSE,drape=TRUE, scales = list(arrows = FALSE, distance = c(2,2,2)),
+      xlab="group",ylab="repl", main="Slope P-value",
+            zlab = list ("P-value", rot =90), 
+            screen = list(z = -50, x = -70, y = 0), par.settings = par.set)
+      p4 <- wireframe(sl.power~nb.ID+nb.repl,x,colorkey=FALSE, 
+        drape=TRUE, scales = list(arrows = FALSE, distance = c(2,2,2)),
+      xlab="group", ylab="repl", main="Slope Power",
+            zlab = list ("Power", rot =90), 
+            screen = list(z = -50, x = -70, y = 0), par.settings = par.set)
+      print(p1, split=c(1,1,2,2),more =TRUE)
+      print(p2, split=c(1,2,2,2),more =TRUE)
+      print(p3, split=c(2,1,2,2),more =TRUE)
+      print(p4, split=c(2,2,2,2))
+      }
+    if (fun3D == "persp") {
+	phi <- ifelse(is.null(extra$phi), 25, extra$phi) 
+	theta <- ifelse(is.null(extra$theta), 30, extra$theta)
+	ticktype <- ifelse(is.null(extra$ticktype), "detailed", extra$ticktype)
+	nticks <- ifelse(is.null(extra$nticks), 4, extra$nticks)
+	nbcol <- ifelse(is.null(extra$nbcol), 100, extra$nbcol)
+	color <- ifelse(is.null(extra$color), "grey", extra$color)
+	coltype <- ifelse(is.null(extra$coltype), "restricted", extra$coltype)
       par(mfrow = c(2, 2),mar=c(1.5,1.5,1.5,1.5))
       X <- unique(x$nb.ID)
       Y <- unique(x$nb.repl)
@@ -92,8 +124,10 @@ function (x, graphtype = "both", nbgroup, nbrepl, phi=25, theta=30, ticktype="de
             phi=phi, theta=theta, ticktype=ticktype, nticks=nticks,
             xlab = "group", ylab = "repl", zlab = "", main=main[i]) 
       }
-    }
-    if (graphtype == "both.dyn") {
+    }      
+          
+
+    if (fun3D == "open3d") {
         open3d()
         bg3d("white")
         material3d(col = "white")
@@ -122,5 +156,6 @@ function (x, graphtype = "both", nbgroup, nbrepl, phi=25, theta=30, ticktype="de
             nrow = length(unique(x$nb.ID)), ncol = length(unique(x$nb.repl))), 
             col = rainbow(10), box = FALSE, zlim = c(0, 1), xlab = "group", 
             ylab = "repl", zlab = "sl.power")
+    }
     }
 }

@@ -10,7 +10,7 @@
 \usage{
 EAMM(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95,0.05),
       VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor", n.X, autocorr.X,
-          X.dist, intercept = 0, heteroscedasticity = c("null") )
+          X.dist, intercept = 0, heteroscedasticity = c("null"), mer.sim, mer.model)
 }
 
 \arguments{
@@ -51,6 +51,8 @@ EAMM(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95,0.05),
   denote the variance function evaluated at \eqn{v}, the exponential
   variance function is defined as \eqn{\sigma^2(v) = e^{2 * \theta * v}}{s2(v) = exp(2* t * v)}, where \eqn{\theta}{t} is the variance
   function coefficient. Default:"Null" }
+  \item{mer.sim}{Use the simluate.merMod function to simulate the data. Potentially faster for large dataset but more restricted in terms of options}
+  \item{mer.model}{Simulate the data based on a existing data and model structure from a lmer object. Should be specified as a list of 3 components: a mer object fitted via lmer, an environmental covariate for which to test the random slope, a random effect (e.g. \code{list(fm1,"Days","Subject"})}
 }
 
 \details{
@@ -83,6 +85,8 @@ analysis of random regression models. Methods in Ecology and Evolution.
   ours=EAMM(numsim=10,group=10,repl=4,fixed=c(0,1,1),VI=seq(0.05,0.3,0.05),
              VS=seq(0.05,0.2,0.05) )
   plot(ours, "both")
+  ours=EAMM(numsim=10, mer.model=list(fm1,"Days","Subject"), VI=seq(0.2,0.5,0.05),
+  	 VS=seq(0.05,0.2,0.05) )
    }
 }
 

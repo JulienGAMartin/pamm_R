@@ -1,8 +1,9 @@
 `EAMM` <-
 function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 
     0.95, 0.05), VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor", n.X = NA, autocorr.X = 0,
-          X.dist = "gaussian", intercept=0,heteroscedasticity=c("null")) 
+          X.dist = "gaussian", intercept=0,heteroscedasticity=c("null"), mer.sim=TRUE, mer.model=NULL) 
 {
+	if (is.null(mer.model)) {
     Hetero <- heteroscedasticity[[1]]
     het <- as.numeric(heteroscedasticity[-1])
 
@@ -16,7 +17,7 @@ function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05,
         Xmax <- fixed[[2]]
         FE <- fixed[[3]]
     }
-
+}
     vgi <- numeric(length(VI) * length(VS))
     vgs <- numeric(length(VI) * length(VS))
     powersl <- numeric(numsim)
@@ -38,15 +39,18 @@ function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05,
     kk <- 0
     for (k in VI) {
         for (r in VS) {
-            N <- group * repl
-            n.x <- ifelse( is.na(n.X)==TRUE, N, n.X)
+            if (is.null(mer.model)){
+            	N <- group * repl
+	        n.x <- ifelse( is.na(n.X)==TRUE, N, n.X)
+            }
             VR <- 1 - k
             if (VR >= 0) {
                 for (i in 1:numsim) {
                     if (relIS == "cor") { CovIS <- CoIS * sqrt(k) * sqrt(r) }
                     if (relIS == "cov") { CovIS <- CoIS }
-                    sigma <- matrix(c(k, CovIS, CovIS, r), ncol = 2)
+                    var <- matrix(c(k, CovIS, CovIS, r), ncol = 2)
 
+                   if (is.null(mer.model)){
                     if (X.dist=="gaussian"){
                         if (autocorr.X==0) { ef <- rnorm(n.x, FM, sqrt(FV)) }
                         else {
@@ -76,72 +80,147 @@ function (numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05,
                         }
                     }
                     else { EF <- ef }
-
+                X <- sort(rep(c(1:repl), group))
+                db <- data.frame(ID = rep(1:group, repl), obs = 1:N, X = X, EF = EF)
+                
+                if (mer.sim == TRUE) {
+                	sigma <- sqrt(VR)
+                	beta <- c(intercept,fixed[3])
+                	names(beta) <- c("(Intercept)","EF")
+                	theta <- as.vector(chol(var)/sigma)[c(1,3,4)]
+                	names(theta) <- c("ID.(Intercept)","ID.EF.(Intercept)","ID.EF")
+                	params <- list(beta=beta, theta= theta, sigma=sigma)
+			y <- simulate(formula(~EF + (EF | ID)),newdata=db,family=gaussian, newparams=params)
+			db$Y <- y[,1]
+		}
+		 else if (mer.sim == FALSE) {
                     er <- numeric(length(N))
                     if (Hetero=="null") (er <- rnorm(N, intercept, sqrt(VR)))
                     if (Hetero=="power") (
                     for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*(het[1]+abs(EF[n])^het[2])^2))} )
                     if (Hetero=="exp")  (
                     for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*exp(2*het[1]*EF[n])))} )
-
-                    X <- sort(rep(c(1:repl), group))
-                    db <- data.frame(ID = rep(1:group, repl), obs = 1:N, 
-                      error = er, X = X, EF = EF)
-                    x <- rmvnorm(group, c(0, 0), sigma, method = "chol")
+                    db$error <- er
+                    x <- rmvnorm(group, c(0, 0), var, method = "svd")
                     db$rand.int <- rep(x[, 1], repl)
                     db$rand.sl <- rep(x[, 2], repl)
                     db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF + 
-                      db$error
-                    
+                      db$error		
+		}
+		else {}
+    
 #models
                    if (r > 0) {
-                      m.full <- lmer(Y ~ EF + (EF | ID), data = db)
-                      m.nocov <- lmer(Y ~ EF + (1 | ID) + (0 + EF | ID), data = db) 
-                      m.nosl <- lmer(Y ~ EF + (1 | ID), data = db)
-                      m.noint <- lmer(Y ~ EF + (0 + EF | ID), data = db) 
+                      m.full <- try(lmer(Y ~ EF + (EF | ID), data = db), silent=TRUE)
+                      m.nocov <- try(lmer(Y ~ EF + (1 | ID) + (0 + EF | ID), data = db), silent=TRUE) 
+                      m.nosl <- try(lmer(Y ~ EF + (1 | ID), data = db), silent=TRUE)
+                      m.noint <- try(lmer(Y ~ EF + (0 + EF | ID), data = db), silent=TRUE) 
                      
                       #anosl <- anova(m.nocov, m.nosl, refit =FALSE)
                       #powersl[i] <- anosl[2, "Pr(>Chisq)"] <= 0.05
                       #pvalsl[i] <- anosl[2, "Pr(>Chisq)"]
+                      if (class(m.full)=="merModLmerTest" & class(m.nosl)=="merModLmerTest")  { 
+                        anoIxE <- anova(m.full, m.nosl, refit =FALSE)
+                        powersl[i] <- anoIxE[2, "Pr(>Chisq)"] <= 0.05
+                        pvalsl[i] <- anoIxE[2, "Pr(>Chisq)"]
+                      }
+                      else{
+                       	powersl[i] <- NA
+            	        pvalsl[i] <- NA
+            	      }
+                        
+                      if (class(m.nocov)=="merModLmerTest" & class(m.noint)=="merModLmerTest")  {                       
+                        anoint <- anova(m.nocov, m.noint, refit =FALSE)
+                        powerint[i] <- anoint[2, "Pr(>Chisq)"] <= 0.05
+                        pvalint[i] <- anoint[2, "Pr(>Chisq)"]
+                      }
+                      else{
+                       	powerint[i] <- NA
+            	        pvalint[i] <- NA
+            	      }                      
                       
-                      anoIxE <- anova(m.full, m.nosl, refit =FALSE)
-                      powersl[i] <- anoIxE[2, "Pr(>Chisq)"] <= 0.05
-                      pvalsl[i] <- anoIxE[2, "Pr(>Chisq)"]
-                      
-                      anoint <- anova(m.nocov, m.noint, refit =FALSE)
-                      powerint[i] <- anoint[2, "Pr(>Chisq)"] <= 0.05
-                      pvalint[i] <- anoint[2, "Pr(>Chisq)"]
-                   }
-                   else {
-                     powersl[i] <- 0
-                     pvalsl[i] <- 1
-                   
-                    db$ dummy <- rep(1:2,nrow(db)/2)
-                    m.lmer <- lmer(Y ~ EF + (1 | dummy), data = db)
-                    m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db) 
-                    pvint <- pchisq(-2 * (logLik(m.lmer, REML = TRUE) - 
-                      logLik(m1.lmer, REML = TRUE))[[1]], 1, lower.tail = FALSE)
-                    powerint[i] <- pvint <= 0.05
-                    pvalint[i] <- pvint
+					}
+				else {
+                     	powersl[i] <- 0
+                		pvalsl[i] <- 1
+                    	#m1.lmer <- lmer(Y ~ EF + (1 | ID), data = db) 
+                     	lrt1 <- rand(m1.lmer)
+                     	pvint <- lrt1[[1]][1,3]
+                     	powerint[i] <- pvint <= 0.05
+                     	pvalint[i] <- pvint
                     }
                 }
+		else if( !is.null(mer.model) ){
+			if (length(mer.model!=3))         stop("mer.model should be a list of a lmer model, an evironmental covariate and a random effect")
+			sigma <- sqrt(VR)
+                	beta <- fixef(mer.model[[1]])
+                	#theta <- getME(mer.model[[1]],"theta") could be used as a based for model with multiple random effects
+                	theta <- as.vector(chol(var)/sigma)[c(1,3,4)]
+                	names(theta) <- c(paste(mer.model[[3]],"(Intercept)",sep="."), 
+                	paste(mer.model[[3]],mer.model[[2]],"(Intercept)",sep="."), paste(mer.model[[3]],mer.model[[2]],sep="."))
+                	params <- list(beta=beta, theta= theta, sigma=sigma)
+                	form <- paste(" ~ ",paste(names(fixef(mer.model[[1]]))[-1],collapse=" + "), "+ (",mer.model[[2]],"|",mer.model[[3]],")")
+                	dat <- mer.model[[1]]@frame[,-1]
+			y <- simulate(as.formula(form), newdata= dat, newparams=params, family=gaussian)
+			dat$Y <- y[,1]
+			formnc <- paste(" ~ ",paste(names(fixef(mer.model[[1]]))[-1],collapse=" + "), "+ ( 1 | ",mer.model[[3]],") + ( 0 +",mer.model[[2]],"|",mer.model[[3]],")")
+			formns <- paste(" ~ ",paste(names(fixef(mer.model[[1]]))[-1],collapse=" + "), "+ ( 1 | ",mer.model[[3]],")")
+			formni <- paste(" ~ ",paste(names(fixef(mer.model[[1]]))[-1],collapse=" + "), "+ ( 0 +",mer.model[[2]],"|",mer.model[[3]],")")
+			
+			if (r > 0) {
+				m.full <- try(lmer(as.formula(paste("Y",form)), data = dat), silent=TRUE) 
+				m.nocov <- try(lmer(as.formula(paste("Y",formnc)), data = dat), silent=TRUE) 
+                        m.nosl <- try(lmer(as.formula(paste("Y",formns)), data = dat), silent=TRUE) 
+                        m.noint <- try(lmer(as.formula(paste("Y",formni)), data = dat), silent=TRUE) 
+                        
+                      if (class(m.full)=="merModLmerTest" & class(m.nosl)=="merModLmerTest")  { 
+                        anoIxE <- anova(m.full, m.nosl, refit =FALSE)
+                        powersl[i] <- anoIxE[2, "Pr(>Chisq)"] <= 0.05
+                        pvalsl[i] <- anoIxE[2, "Pr(>Chisq)"]
+                      }
+                      else{
+                       	powersl[i] <- NA
+            	        pvalsl[i] <- NA
+            	      }
+                        
+                      if (class(m.nocov)=="merModLmerTest" & class(m.noint)=="merModLmerTest")  {                       
+                        anoint <- anova(m.nocov, m.noint, refit =FALSE)
+                        powerint[i] <- anoint[2, "Pr(>Chisq)"] <= 0.05
+                        pvalint[i] <- anoint[2, "Pr(>Chisq)"]
+                      }
+                      else{
+                       	powerint[i] <- NA
+            	        pvalint[i] <- NA
+            	      }
+             	}
+                else {
+                     powersl[i] <- 0
+                     pvalsl[i] <- 1
+                     m.nosl <- lmer(as.formula(paste("Y",formns)), data = dat)
+                     lrt1 <- rand(m.nosl)
+                     pvint <- lrt1[[1]][1,3]
+                     powerint[i] <- pvint <= 0.05
+                     pvalint[i] <- pvint
+                    }
+                }
+                }       	
 
                   kk <- kk + 1
                   vgi[kk] <- k
                   vgs[kk] <- r
-                  slCIpow <- ci(powersl)
+                  slCIpow <- ci(powersl, na.rm=TRUE)
                   slpowestimate[kk] <- slCIpow["Estimate"]
                   slpowCIlower[kk] <- slCIpow["CI lower"]
                   slpowCIupper[kk] <- slCIpow["CI upper"]
-                  slCIpval <- ci(pvalsl)
+                  slCIpval <- ci(pvalsl, na.rm=TRUE)
                   slpvalestimate[kk] <- slCIpval["Estimate"]
                   slpvalCIlower[kk] <- slCIpval["CI lower"]
                   slpvalCIupper[kk] <- slCIpval["CI upper"]
-                  intCIpow <- ci(powerint)
+                  intCIpow <- ci(powerint, na.rm=TRUE)
                   intpowestimate[kk] <- intCIpow["Estimate"]
                   intpowCIlower[kk] <- intCIpow["CI lower"]
                   intpowCIupper[kk] <- intCIpow["CI upper"]
-                  intCIpval <- ci(pvalint)
+                  intCIpval <- ci(pvalint, na.rm=TRUE)
                   intpvalestimate[kk] <- intCIpval["Estimate"]
                   intpvalCIlower[kk] <- intCIpval["CI lower"]
                   intpvalCIupper[kk] <- intCIpval["CI upper"]
