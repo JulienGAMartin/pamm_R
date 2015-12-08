@@ -5,9 +5,12 @@ Version: 0.9
 Date: 2015-12-10
 Author: Julien Martin
 Maintainer: Julien Martin <julienmartin@abdn.ac.uk>
+URL: https://github.com/JulienGAMartin/pamm_R
+BugReports: https://github.com/JulienGAMartin/pamm_R/issues
 Description: Simulation functions to assess or explore the power of a dataset to estimates significant random effects (intercept or slope) in a mixed model. The functions are based on the "lme4" package.
-License: GPL-2
-Depends:R (>= 2.4.0),lmerTest
-Imports: gmodels, lattice, mvtnorm
+License: GPL-2 | GPL-3
+Depends:R (>= 3.0.0), lmerTest
+Imports: gmodels, lattice, mvtnorm, lme4
 Suggests: rgl
 LazyLoad: yes
+

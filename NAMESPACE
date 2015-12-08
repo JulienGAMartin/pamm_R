@@ -9,6 +9,7 @@ import(
 importFrom(mvtnorm,rmvnorm) 
 importFrom(gmodels,ci) 
 importFrom(lattice,wireframe)
+importFrom(lme4,fixef)
 
 S3method(plot, EAMM)
 S3method(plot, PAMM)
