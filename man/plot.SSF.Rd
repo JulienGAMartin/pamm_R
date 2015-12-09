@@ -20,7 +20,7 @@
 \seealso{\code{\link{SSF}}, \code{\link{plot.PAMM}}, \code{\link{plot.EAMM}} }
 \examples{
 \dontrun{
-   oursSSF=SSF(50,100,10,c(0.4,0.1,0.6,0))
+   oursSSF <- SSF(50,100,10,c(0.4,0.1,0.6,0))
    plot(oursSSF)
    }
 }

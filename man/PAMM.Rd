@@ -74,7 +74,7 @@ analysis of random regression models. Methods in Ecology and Evolution.
 
 \examples{
 \dontrun{
-  ours=PAMM(numsim=10,group=c(seq(10,50,10),100),repl=c(2,4,6),
+  ours <- PAMM(numsim=10,group=c(seq(10,50,10),100),repl=c(3,4,6),
            randompart=c(0.4,0.1,0.5,0.1),fixed=c(0,1,0.7))       
   plot(ours,"both")
    }

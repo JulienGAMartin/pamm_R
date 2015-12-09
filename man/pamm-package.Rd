@@ -3,7 +3,7 @@
 \alias{pamm}
 \docType{package}
 \title{
-Power analysis for random effects in mixed models
+Power Analysis for Random Effects in Mixed Models
 }
 
 \description{

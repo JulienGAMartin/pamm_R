@@ -82,11 +82,14 @@ analysis of random regression models. Methods in Ecology and Evolution.
 
 \examples{
 \dontrun{
-  ours=EAMM(numsim=10,group=10,repl=4,fixed=c(0,1,1),VI=seq(0.05,0.3,0.05),
+  ours <- EAMM(numsim=10,group=10,repl=4,fixed=c(0,1,1),VI=seq(0.1,0.3,0.05),
              VS=seq(0.05,0.2,0.05) )
   plot(ours, "both")
-  ours=EAMM(numsim=10, mer.model=list(fm1,"Days","Subject"), VI=seq(0.2,0.5,0.05),
-  	 VS=seq(0.05,0.2,0.05) )
+  
+  (fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy))
+  ours2 <- EAMM(numsim=10, mer.model=list(model=fm1,env="Days",random="Subject"),
+      VI=seq(0.3,0.5,0.1), VS=seq(0.05,0.2,0.05) )
+  plot(ours2, "both")
    }
 }
 

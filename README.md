@@ -20,5 +20,3 @@ Code need to be cleaned a bit.
 ###ToDo
 - restructure the package based on a simulate function and a power.eval function that PAMM, SSF and EAMM can call
 - rewrite support information
-- fix failed convergence warning
-- add failed convergence info and evalutation of true number of simulation used

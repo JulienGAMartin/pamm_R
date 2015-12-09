@@ -72,8 +72,8 @@ analysis of random regression models. Methods in Ecology and Evolution.
 
 \examples{
 \dontrun{
-  ours<- SSF(100,200,10,c(0.4,0.1,0.6,0))
-  plot(ours)
+   oursSSF <- SSF(,100,10,c(0.4,0.1,0.6,0))
+   plot(oursSSF)
    }
 }
 
