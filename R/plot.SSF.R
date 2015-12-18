@@ -3,34 +3,21 @@
   {
     if (!inherits(x, "SSF")) 
       stop("use only with \"SSF\" xs")
-    par(mfrow = c(2, 2))
-    plot(x$nb.ID, x$int.pval, type = "l", xlab = "Nb Gr./Repl.", 
-         ylab = "P-value", main = "Intercept P-value", ylim = c(0, 
-                                                                1), xaxt = "n")
-    axis(1, at = x$nb.ID, labels = paste(x$nb.ID, x$nb.repl, 
-                                         sep = "/"), tick = FALSE)
-    abline(h = 0.05)
-    lines(x$nb.ID, x$CIup.ipv, lty = 2)
-    lines(x$nb.ID, x$CIlow.ipv, lty = 2)
-    plot(x$nb.ID, x$sl.pval, type = "l", xlab = "Nb Gr./Repl.", 
-         ylab = "P-value", main = "Slope P-value", ylim = c(0, 
-                                                            1), xaxt = "n")
-    axis(1, at = x$nb.ID, labels = paste(x$nb.ID, x$nb.repl, 
-                                         sep = "/"), tick = FALSE)
-    abline(h = 0.05)
-    lines(x$nb.ID, x$CIup.slpv, lty = 2)
-    lines(x$nb.ID, x$CIlow.slpv, lty = 2)
-    plot(x$nb.ID, x$int.power, type = "l", ylim = c(0, 1), xlab = "Nb Gr./Repl.", 
-         ylab = "Power", main = "Intercept Power Calculations", 
-         xaxt = "n")
-    axis(1, at = x$nb.ID, labels = paste(x$nb.ID, x$nb.repl, 
-                                         sep = "/"), tick = FALSE)
-    lines(x$nb.ID, x$CIup.ipo, lty = 2)
-    lines(x$nb.ID, x$CIlow.ipo, lty = 2)
-    plot(x$nb.ID, x$sl.power, type = "l", ylim = c(0, 1), xlab = "Nb Gr./Repl.", 
-         ylab = "Power", main = "Slope Power Calculations", xaxt = "n")
-    axis(1, at = x$nb.ID, labels = paste(x$nb.ID, x$nb.repl, 
-                                         sep = "/"), tick = FALSE)
-    lines(x$nb.ID, x$CIup.slpo, lty = 2)
-    lines(x$nb.ID, x$CIlow.slpo, lty = 2)
+    
+    xs <- c("int.pval", "sl.pval", "int.power", "sl.power")
+    ys <- c("ipv", "slpv", "ipo", "slpo")
+    labs <- c("int.p-value","int.power","slope.p-value","slope.power")
+    mains <- c("Intercept P-value", "Intercept Power", "Slope P-value", "Slope Power")
+    par(mfrow = c(2,2), mar=c(2,2,2,2), oma=c(4,4,2,0) )      
+    for (i in 1:4) {
+      plot(x$nb.ID, x[,xs[i]], type = "l", xlab = "", 
+           ylab = "", ylim = c(0,1), xaxt = "n",bty="L")
+      axis(1, at=x$nb.ID, labels=paste(x$nb.ID, x$nb.repl, sep="/"), tick=FALSE)
+      if (i<=2) abline(h = 0.05)
+      lines(x$nb.ID, x[, paste("CIup.",ys[i], sep="")], lty = 2)
+      lines(x$nb.ID, x[, paste("CIlow.",ys[i], sep="")], lty = 2)
+    }
+    mtext("Nb Gr./Repl.", 1, line=2, outer=TRUE, cex=1.2)
+    mtext(c("P-value","Power"), 2, at=c(0.75,0.25), line=2, outer=TRUE, cex=1.2)
+    mtext(c("Intercept","Slope"), 3, at=c(0.25,0.75), line=0.5, outer=TRUE, cex=1.2)
   }

@@ -23,8 +23,8 @@
   \item{vs}{ VS for which plots the output. Necessary for "VI" type of graph }
   \item{fun3D}{plot function used to plot the 3D graph.
   	"wireframe" uses lattice,
-  	"persp" uses  graphics (need to be implemented)
-  	and "open3d" uses rgl (broken need to be fixed)}
+  	"persp" uses  graphics,
+  	and "open3d" uses rgl.}
   \item{\dots}{ potentially further arguments to pass to methods }
 }
 
