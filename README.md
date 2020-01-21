@@ -6,6 +6,12 @@ Simulation functions to assess or explore the power of
 a dataset to estimates significant random effects in a mixed model.
 The functions are based on the "lme4" package.
 
+### Installation
+The package is available on CRAN, in case of problem you can download the developper version directly from github using 
+`
+devtools::install_github("JulienGAMartin/pamm_R")
+`
+
 
 ### References:
 Martin, Nussey, Wilson and Reale Submitted Measuring between-individual
