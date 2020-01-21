@@ -8,9 +8,11 @@
 }
 
 \usage{
-EAMM(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95,0.05),
-      VS = seq(0.05, 0.5, 0.05), CoIS = 0, relIS = "cor", n.X, autocorr.X,
-          X.dist, intercept = 0, heteroscedasticity = c("null"), mer.sim, mer.model)
+EAMM(numsim, group, repl, fixed = c(0, 1, 0),
+     VI = seq(0.05, 0.95,0.05), VS = seq(0.05, 0.5, 0.05),
+     CoIS = 0, relIS = "cor", n.X, autocorr.X,
+     X.dist, intercept = 0, heteroscedasticity = c("null"),
+     mer.sim, mer.model)
 }
 
 \arguments{
@@ -18,11 +20,11 @@ EAMM(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95,0.05),
   \item{group}{number of group}
   \item{repl}{ number of replicates per group}
   \item{fixed}{vector of lenght 3 with mean, variance and estimate of
-    fixed effect to simulate. Default: \code{c(0,1,0)} }
+    fixed effect to simulate. Default: \code{c(0, 1, 0)} }
   \item{VI}{variance component of intercept. Could be specified as a
-    vector. Default: \code{seq(0.05,0.95,0.05)}}
-  \item{VS}{variance component of slope. Could be specified as a vector.
-    Default: \code{seq(0.05,0.5,0.05)}}
+    vector. Default: \code{seq(0.05, 0.95, 0.05)}}
+  \item{VS}{Variance component of the slope or IxE. Could be specified as a vector.
+    Default: \code{seq(0.05, 0.5, 0.05)}}
   \item{CoIS}{value of correlation or covariance between random intercept
     and random slope. Default: 0}
   \item{relIS}{"cor" or "cov" set the type of relation give in CoIS. By
@@ -41,7 +43,7 @@ EAMM(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95,0.05),
   \item{heteroscedasticity}{a vector specifying heterogeneity in residual
     variance across X.  If \code{c("null")} residual variance is homogeneous
     across X. If \code{c("power",t1,t2)} models heterogeneity with a constant
-    plus power variance function. 
+    plus power variance function.
     Letting \eqn{v} denote the variance covariate and \eqn{\sigma^2(v)}{s2(v)}
     denote the variance function evaluated at \eqn{v}, the constant plus power
     variance function is defined as \eqn{\sigma^2(v) = (\theta_1 + |v|^{\theta_2})^2}{s2(v) = (t1 + |v|^t2)^2},
@@ -65,13 +67,13 @@ EAMM(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95,0.05),
 
 \value{
   data frame reporting estimated P-values and power with CI for random
-  intercept and random slope  
+  intercept and random slope
  }
 
 \references{
 Martin, Nussey, Wilson and Reale Submitted Measuring between-individual
 variation in reaction norms in field and experimental studies: a power
-analysis of random regression models. Methods in Ecology and Evolution.  
+analysis of random regression models. Methods in Ecology and Evolution.
 }
 \author{ Julien Martin }
 
@@ -82,16 +84,16 @@ analysis of random regression models. Methods in Ecology and Evolution.
 
 \examples{
 \dontrun{
-  ours <- EAMM(numsim=10,group=10,repl=4,fixed=c(0,1,1),VI=seq(0.1,0.3,0.05),
-             VS=seq(0.05,0.2,0.05) )
+  ours <- EAMM(numsim = 10, group = 10, repl = 4, fixed = c(0, 1, 1),
+    VI = seq(0.1, 0.3, 0.05), VS = seq(0.05, 0.2, 0.05) )
   plot(ours, "both")
-  
+
   (fm1 <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy))
-  ours2 <- EAMM(numsim=10, mer.model=list(model=fm1,env="Days",random="Subject"),
-      VI=seq(0.3,0.5,0.1), VS=seq(0.05,0.2,0.05) )
+  ours2 <- EAMM(numsim = 10,
+    mer.model = list(model = fm1, env = "Days", random = "Subject"),
+    VI = seq(0.3, 0.5, 0.1), VS = seq(0.05, 0.2, 0.05) )
   plot(ours2, "both")
    }
 }
 
 \keyword{ misc }
-

@@ -8,7 +8,8 @@
 
 \usage{
 PAMM(numsim, group, repl, randompart, fixed, n.X, autocorr.X,
-          X.dist, intercept, heteroscedasticity = c("null"), ftype="lmer", mer.sim=FALSE)
+X.dist, intercept, heteroscedasticity = c("null"),
+ftype="lmer", mer.sim=FALSE)
 }
 
 \arguments{
@@ -19,7 +20,7 @@ PAMM(numsim, group, repl, randompart, fixed, n.X, autocorr.X,
     of intercept, VI; 2: variance component of slope, VS; 3: residual
     variance, VR; 4: relation between random intercept and random
     slope; 5: "cor" or "cov" determine if the relation 4 between I ans S is a correlation or a covariance. Default: \code{"cor"} }
-  \item{fixed}{ vector with mean, variance and estimate of fixed effect to simulate. Default: \code{c(0,1,0)} }
+  \item{fixed}{ vector with mean, variance and estimate of fixed effect to simulate. Default: \code{c(0, 1, 0)} }
 
   \item{n.X}{ number of different values to simulate for the fixed effect (covariate).
    If \code{NA}, all values of X are independent between groups. If the value specified
@@ -74,9 +75,10 @@ analysis of random regression models. Methods in Ecology and Evolution.
 
 \examples{
 \dontrun{
-  ours <- PAMM(numsim=10,group=c(seq(10,50,10),100),repl=c(3,4,6),
-           randompart=c(0.4,0.1,0.5,0.1),fixed=c(0,1,0.7))       
-  plot(ours,"both")
+ours <- PAMM(numsim = 10, group = c(seq(10, 50, 10), 100),
+             repl = c(3, 4, 6),
+             randompart = c(0.4, 0.1, 0.5, 0.1), fixed = c(0, 1, 0.7))
+plot(ours,"both")
    }
 }
 \keyword{ misc }

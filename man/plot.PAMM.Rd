@@ -7,7 +7,8 @@
 }
 
 \usage{
-\method{plot}{PAMM}(x, graphtype = "both", nbgroup, nbrepl, fun3D="wireframe",\dots)
+\method{plot}{PAMM}(x, graphtype = "both", nbgroup, nbrepl,
+fun3D = "wireframe", \dots)
 }
 
 \arguments{
@@ -32,7 +33,7 @@
 \details{
 	Parameters phi, theta, ticktype ("simple" or "detailed"), nticks, nbcol
 	from \code{\link{persp}} function could also be specified for 3D plots.
-	In addition, color schemes ("grey", "cm.colors" and "rainbow") and 
+	In addition, color schemes ("grey", "cm.colors" and "rainbow") and
 	coltype ("restricted" or "0-1") parameters could also be specified for
 	 3D plots.
 }
@@ -43,7 +44,7 @@
 \examples{
 \dontrun{
   ours <- PAMM(numsim=10,group=c(seq(10,50,10),100),repl=c(3,4,6),
-           randompart=c(0.4,0.1,0.5,0.1),fixed=c(0,1,0.7))  
+           randompart=c(0.4,0.1,0.5,0.1),fixed=c(0,1,0.7))
   plot(ours, "both")
   plot(ours, "group",nbrepl=4)
   plot(ours,"repl",nbgroup=20)
@@ -51,4 +52,3 @@
 }
 
 \keyword{ misc }
-

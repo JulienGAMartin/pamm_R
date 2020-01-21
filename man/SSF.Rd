@@ -7,8 +7,9 @@
  group and replicates, giving the specified sample size, and assess p-values and
  power of random intercept and random slope }
 
-\usage{ SSF(numsim, tss, nbstep = 10, randompart, fixed = c(0, 1, 0), n.X, autocorr.X,
-          X.dist, intercept = 0, exgr = NA, exrepl = NA, heteroscedasticity = c("null") )
+\usage{ SSF(numsim, tss, nbstep = 10, randompart, fixed = c(0, 1, 0),
+n.X, autocorr.X, X.dist, intercept = 0, exgr = NA, exrepl = NA,
+heteroscedasticity = c("null") )
 }
 
 \arguments{
