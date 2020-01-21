@@ -1,7 +1,7 @@
 `SSF` <-
-  function (numsim, tss, nbstep = 10, randompart, fixed = c(0, 
-                                                            1, 0), n.X = NA, autocorr.X = 0, X.dist="gaussian", intercept = 0, 
-            exgr = NA, exrepl = NA, heteroscedasticity=c("null")) 
+  function (numsim, tss, nbstep = 10, randompart, fixed = c(0,
+                                                            1, 0), n.X = NA, autocorr.X = 0, X.dist="gaussian", intercept = 0,
+            exgr = NA, exrepl = NA, heteroscedasticity=c("null"))
   {
     o.warn <- getOption("warn")
 
@@ -44,10 +44,10 @@
       }
     }
     sigma <- matrix(c(VI, CovIS, CovIS, VS), ncol = 2)
-    
+
     Hetero <- heteroscedasticity[[1]]
     het <- as.numeric(heteroscedasticity[-1])
-    
+
     if (X.dist=="gaussian") {
       FM <- fixed[[1]]
       FV <- fixed[[2]]
@@ -58,7 +58,7 @@
       Xmax <- fixed[[2]]
       FE <- fixed[[3]]
     }
-    
+
     iD <- numeric(length(mg.r[, 1]))
     rp <- numeric(length(mg.r[, 1]))
     ss <- numeric(length(mg.r[, 1]))
@@ -80,12 +80,12 @@
     intpvalCIupper <- numeric(length(mg.r[, 1]))
     nsim.used.sl <- numeric(length(mg.r[, 1]))
     nsim.used.int <- numeric(length(mg.r[, 1]))
-    
+
     kk <- 0
     for (k in stepvec) {
       N <- tss
       n.x <- ifelse( is.na(n.X)==TRUE,N, n.X)
-      
+
       for (i in 1:numsim) {
         options(warn=2)
         if (X.dist=="gaussian"){
@@ -98,12 +98,12 @@
             ef <- y+FM
           }
         }
-        
+
         if (X.dist=="unif"){
           if (autocorr.X==0) { ef <- runif(n.x, Xmin, Xmax) }
           else { stop("autocorrelation in fixed effects is not yet implemented for uniform distribution") }
         }
-        
+
         if (n.x!=N) {
           if (n.x>=mg.r[k, 2]) {
             inief <- sample(1:(n.x-mg.r[k, 2]+1),mg.r[k, 1],replace=TRUE)
@@ -117,24 +117,24 @@
           }
         }
         else { EF <- ef }
-        
+
         er <- numeric(length(N))
         if (Hetero=="null") (er <- rnorm(N, intercept, sqrt(VR)))
         if (Hetero=="power") (
           for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*(het[1]+abs(EF[n])^het[2])^2))} )
         if (Hetero=="exp")  (
           for (n in 1:N) {er[n] <- rnorm(1, intercept, sqrt(VR*exp(2*het[1]*EF[n])))} )
-        
-        db <- data.frame(ID = rep(1:mg.r[k, 1], mg.r[k, 2])[1:N], 
+
+        db <- data.frame(ID = rep(1:mg.r[k, 1], mg.r[k, 2])[1:N],
                          obs = 1:N, error = er, EF = EF)
         x <- rmvnorm(mg.r[k, 1], c(0, 0), sigma, method = "svd")
         db$rand.int <- rep(x[, 1], mg.r[k, 2])[1:N]
         db$rand.sl <- rep(x[, 2], mg.r[k, 2])[1:N]
-        db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF + 
+        db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF +
           db$error
-        
+
         m1.lmer <- try(lmer(Y ~ EF + (1 | ID), data = db),TRUE)
-        if (class(m1.lmer)!="merModLmerTest")  {          	
+        if (class(m1.lmer)!="lmerModLmerTest")  {
           powerint[i] <- NA
           pvalint[i] <- NA
         }
@@ -144,13 +144,13 @@
           powerint[i] <- pvint <= 0.05
           pvalint[i] <- pvint
         }
-        
+
         m2.lmer <- try(lmer(Y ~ EF + (EF | ID), data = db),TRUE)
-        if (class(m2.lmer)!="merModLmerTest" || class(m1.lmer)!="merModLmerTest")  {          	
+        if (class(m2.lmer)!="lmerModLmerTest" || class(m1.lmer)!="lmerModLmerTest")  {
           powersl[i] <- NA
           pvalsl[i] <- NA
         }
-        else{ 
+        else{
           anosl <- anova(m2.lmer, m1.lmer, refit=FALSE)
           powersl[i] <- anosl[2, "Pr(>Chisq)"] <= 0.05
           pvalsl[i] <- anosl[2, "Pr(>Chisq)"]
@@ -181,11 +181,11 @@
       nsim.used.sl[kk] <- numsim - sum(is.na(pvalsl))
       nsim.used.int[kk] <- numsim - sum(is.na(pvalint))
     }
-    sim.sum <- data.frame(nb.ID = iD, nb.repl = rp, N = ss, int.pval = intpvalestimate, 
-                          CIlow.ipv = intpvalCIlower, CIup.ipv = intpvalCIupper, 
-                          int.power = intpowestimate, CIlow.ipo = intpowCIlower, 
-                          CIup.ipo = intpowCIupper, sl.pval = slpvalestimate, CIlow.slpv = slpvalCIlower, 
-                          CIup.slpv = slpvalCIupper, sl.power = slpowestimate, 
+    sim.sum <- data.frame(nb.ID = iD, nb.repl = rp, N = ss, int.pval = intpvalestimate,
+                          CIlow.ipv = intpvalCIlower, CIup.ipv = intpvalCIupper,
+                          int.power = intpowestimate, CIlow.ipo = intpowCIlower,
+                          CIup.ipo = intpowCIupper, sl.pval = slpvalestimate, CIlow.slpv = slpvalCIlower,
+                          CIup.slpv = slpvalCIupper, sl.power = slpowestimate,
                           CIlow.slpo = slpowCIlower, CIup.slpo = slpowCIupper,
                           nsim.int = nsim.used.int, nsim.sl = nsim.used.sl)
 

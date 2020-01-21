@@ -4,7 +4,7 @@
             mer.sim=FALSE)
   {
     o.warn <- getOption("warn")
-    
+
     VI <- randompart[1]
     VS <- randompart[2]
     VR <- randompart[3]
@@ -16,17 +16,17 @@
       else if (randompart[5] == "cov") {
         CovIS <-randompart[4]
       }
-      
+
     }
     else {
       CorIS <- randompart[4]
       CovIS <- CorIS * sqrt(VI) * sqrt(VS)
     }
     M <- matrix(c(VI, CovIS, CovIS, VS), ncol = 2)
-    
+
     Hetero <- heteroscedasticity[1]
     het <- as.numeric(heteroscedasticity[-1])
-    
+
     if (X.dist=="gaussian") {
       FM <- fixed[1]
       FV <- fixed[2]
@@ -37,7 +37,7 @@
       Xmax <- fixed[2]
       FE <- fixed[3]
     }
-    
+
     iD <- numeric(length(repl) * length(group))
     rp <- numeric(length(repl) * length(group))
     powersl <- numeric(numsim)
@@ -58,14 +58,14 @@
     intpvalCIupper <- numeric(length(repl) * length(group))
     nsim.used.sl <- numeric(length(repl) * length(group))
     nsim.used.int <- numeric(length(repl) * length(group))
-    
+
     kk <- 0
     for (k in group) {
       for (r in repl) {
         N <- k * r
         n.x <- ifelse( is.na(n.X)==TRUE,N, n.X)
         for (i in 1:numsim) {
-          options(warn=2) 
+          options(warn=2)
           if (X.dist=="gaussian"){
             if (autocorr.X==0) { ef <- rnorm(n.x, FM, sqrt(FV)) }
             else {
@@ -76,12 +76,12 @@
               ef <- y+FM
             }
           }
-          
+
           if (X.dist=="unif"){
             if (autocorr.X==0) { ef <- runif(n.x, Xmin, Xmax) }
             else { stop("autocorrelation in fixed effects is not yet implemented for uniform distribution") }
           }
-          
+
           if (n.x!=N) {
             if (n.x>=r) {
               inief <- sample(1:(n.x-r+1),k,replace=TRUE)
@@ -95,7 +95,7 @@
             }
           }
           else { EF <- ef }
-          
+
           db <- data.frame(ID = rep(1:k, r), obs = 1:N, EF = EF)
           if (mer.sim == TRUE) {
             family <- gaussian
@@ -119,24 +119,24 @@
             x <- rmvnorm(k, c(0, 0), M, method = "svd")
             db$rand.int <- rep(x[, 1], r)
             db$rand.sl <- rep(x[, 2], r)
-            db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF + db$error		
+            db$Y <- db$rand.int + (db$rand.sl + FE) * db$EF + db$error
           }
           #                if (ftype=="lme") {
           #                m.lm <- lm(Y ~ EF, data = db)
-          #                     m1.lme <- lme(Y ~ EF,random= ~1 | ID,weights=varConstPower(form=~EF), data = db) 
-          #                     pvint <- pchisq(-2 * (logLik(m.lm, REML = TRUE) - 
+          #                     m1.lme <- lme(Y ~ EF,random= ~1 | ID,weights=varConstPower(form=~EF), data = db)
+          #                     pvint <- pchisq(-2 * (logLik(m.lm, REML = TRUE) -
           #                     logLik(m1.lme, REML = TRUE))[[1]], 1, lower.tail = FALSE)
           #                     powerint[i] <- pvint <= 0.05
           #                     pvalint[i] <- pvint
-          #                     m2.lme <- lme(Y ~ EF,random= ~EF | ID,weights=varConstPower(form=~EF), data = db) 
+          #                     m2.lme <- lme(Y ~ EF,random= ~EF | ID,weights=varConstPower(form=~EF), data = db)
           #                     anosl <- anova(m2.lme, m1.lme)
           #                     powersl[i] <- anosl[2, "Pr(>Chisq)"] <= 0.05
-          #                     pvalsl[i] <- anosl[2, "Pr(>Chisq)"]               
+          #                     pvalsl[i] <- anosl[2, "Pr(>Chisq)"]
           #                }
           #                else {
-          
+
           m1.lmer <- try(lmer(Y ~ EF + (1 | ID), data = db), silent = TRUE )
-          if (class(m1.lmer)!="merModLmerTest")  {                       
+          if (class(m1.lmer)!="lmerModLmerTest")  {
             powerint[i] <- NA
             pvalint[i] <- NA
           }
@@ -147,9 +147,9 @@
             pvalint[i] <- pvint
           }
           if (VS > 0) {
-            #                     	m2.lmer1 <- lmer(Y ~ EF + (1|ID) + (0 + EF|ID), data = db)                     
-            m2.lmer2 <- try(lmer(Y ~ EF + (EF | ID), data = db), TRUE) 
-            if (class(m2.lmer2)!="merModLmerTest" || class(m1.lmer)!="merModLmerTest")  {                       
+            #                     	m2.lmer1 <- lmer(Y ~ EF + (1|ID) + (0 + EF|ID), data = db)
+            m2.lmer2 <- try(lmer(Y ~ EF + (EF | ID), data = db), TRUE)
+            if (class(m2.lmer2)!="lmerModLmerTest" || class(m1.lmer)!="lmerModLmerTest")  {
               powerint[i] <- NA
               pvalint[i] <- NA
             }
@@ -186,24 +186,22 @@
       }
     }
     if (VS > 0) {
-      sim.sum <- data.frame(nb.ID = iD, nb.repl = rp, int.pval = intpvalestimate, 
-                            CIlow.ipv = intpvalCIlower, CIup.ipv = intpvalCIupper, 
-                            int.power = intpowestimate, CIlow.ipo = intpowCIlower, 
-                            CIup.ipo = intpowCIupper, sl.pval = slpvalestimate, CIlow.slpv = slpvalCIlower, 
-                            CIup.slpv = slpvalCIupper, sl.power = slpowestimate, 
+      sim.sum <- data.frame(nb.ID = iD, nb.repl = rp, int.pval = intpvalestimate,
+                            CIlow.ipv = intpvalCIlower, CIup.ipv = intpvalCIupper,
+                            int.power = intpowestimate, CIlow.ipo = intpowCIlower,
+                            CIup.ipo = intpowCIupper, sl.pval = slpvalestimate, CIlow.slpv = slpvalCIlower,
+                            CIup.slpv = slpvalCIupper, sl.power = slpowestimate,
                             CIlow.slpo = slpowCIlower, CIup.slpo = slpowCIupper,
                             nsim.int = nsim.used.int, nsim.sl = nsim.used.sl)
     }
     else {
-      sim.sum <- data.frame(nb.ID = iD, nb.repl = rp, int.pval = intpvalestimate, 
-                            CIlow.ipv = intpvalCIlower, CIup.ipv = intpvalCIupper, 
-                            int.power = intpowestimate, CIlow.ipo = intpowCIlower, 
+      sim.sum <- data.frame(nb.ID = iD, nb.repl = rp, int.pval = intpvalestimate,
+                            CIlow.ipv = intpvalCIlower, CIup.ipv = intpvalCIupper,
+                            int.power = intpowestimate, CIlow.ipo = intpowCIlower,
                             CIup.ipo = intpowCIupper,
                             nsim.int = nsim.used.int)
     }
-    
+
     class(sim.sum) = c("PAMM", "data.frame")
     sim.sum
   }
-
-
