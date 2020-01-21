@@ -3,7 +3,7 @@
 
 \title{ Simulation function to assess power of mixed models }
 \description{ Given a specific total number of observations and variance-covariance
- structure for random effect, the function simulates different association of number of 
+ structure for random effect, the function simulates different association of number of
  group and replicates, giving the specified sample size, and assess p-values and
  power of random intercept and random slope }
 
@@ -57,11 +57,11 @@
 }
 
 \value{  data frame reporting estimated P-values and power with CI for random
-  intercept and random slope  
+  intercept and random slope
  }
 \references{ Martin, Nussey, Wilson and Reale Submitted Measuring between-individual
 variation in reaction norms in field and experimental studies: a power
-analysis of random regression models. Methods in Ecology and Evolution.  
+analysis of random regression models. Methods in Ecology and Evolution.
 }
 \author{ Julien Martin }
 
@@ -72,10 +72,9 @@ analysis of random regression models. Methods in Ecology and Evolution.
 
 \examples{
 \dontrun{
-   oursSSF <- SSF(,100,10,c(0.4,0.1,0.6,0))
+   oursSSF <- SSF(10,100,10,c(0.4,0.1,0.6,0))
    plot(oursSSF)
    }
 }
 
 \keyword{ misc }
-

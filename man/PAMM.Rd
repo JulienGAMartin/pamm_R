@@ -31,8 +31,8 @@ PAMM(numsim, group, repl, randompart, fixed, n.X, autocorr.X,
 
   \item{intercept}{a numeric value giving the expected intercept value. Default:0 }
   \item{heteroscedasticity}{a vector specifying heterogeneity in residual variance
-    across X. If \code{c("null")} residual variance is homogeneous across X. If 
-    \code{c("power",t1,t2)} models heterogeneity with a constant plus power variance function. 
+    across X. If \code{c("null")} residual variance is homogeneous across X. If
+    \code{c("power",t1,t2)} models heterogeneity with a constant plus power variance function.
     Letting \eqn{v} denote the variance covariate and \eqn{\sigma^2(v)}{s2(v)}
     denote the variance function evaluated at \eqn{v}, the constant plus power
     variance function is defined as \eqn{\sigma^2(v) = (\theta_1 + |v|^{\theta_2})^2}{s2(v) = (t1 + |v|^t2)^2},
@@ -42,7 +42,7 @@ PAMM(numsim, group, repl, randompart, fixed, n.X, autocorr.X,
   denote the variance function evaluated at \eqn{v}, the exponential
   variance function is defined as \eqn{\sigma^2(v) = e^{2 * \theta * v}}{s2(v) = exp(2* t * v)}, where \eqn{\theta}{t} is the variance
   function coefficient.}
-  \item{ftype}{character value "lmer", "lme" or "MCMCglmm" specifying the function to use to fit 
+  \item{ftype}{character value "lmer", "lme" or "MCMCglmm" specifying the function to use to fit
     the model. Actually "lmer" only is accepted }
   \item{mer.sim}{simulate the data using simulate.merMod from lme4. Faster for large sample size but not as flexible.}
 }
@@ -56,20 +56,20 @@ PAMM(numsim, group, repl, randompart, fixed, n.X, autocorr.X,
 
 \value{
   data frame reporting estimated P-values and power with CI for random
-  intercept and random slope  
+  intercept and random slope
  }
 
-\references{ 
+\references{
 Martin, Nussey, Wilson and Reale Submitted Measuring between-individual
 variation in reaction norms in field and experimental studies: a power
-analysis of random regression models. Methods in Ecology and Evolution.  
+analysis of random regression models. Methods in Ecology and Evolution.
 }
 \author{ Julien Martin }
 
 \section{Warning}{the simulation is based on a balanced data set with
   unrelated group}
 
-\seealso{\code{\link{EAMM}}, \code{\link{SSF}}, \code{\link{plot.PAMM}} 
+\seealso{\code{\link{EAMM}}, \code{\link{SSF}}, \code{\link{plot.PAMM}}
  }
 
 \examples{
