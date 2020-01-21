@@ -1,16 +1,15 @@
 Package: pamm
 Type: Package
 Title: Power Analysis for Random Effects in Mixed Models
-Version: 0.9
-Date: 2015-12-10
+Version: 1.01
+Date: 2020-01-21
 Authors@R: person("Julien","Martin", email = "julienmartin@abdn.ac.uk",
   role = c("aut", "cre"))
 URL: https://github.com/JulienGAMartin/pamm_R
 BugReports: https://github.com/JulienGAMartin/pamm_R/issues
-Description: Simulation functions to assess or explore the power of a dataset to estimates significant random effects (intercept or slope) in a mixed model. The functions are based on the "lme4" package.
+Description: Simulation functions to assess or explore the power of a dataset to estimates significant random effects (intercept or slope) in a mixed model. The functions are based on the "lme4" and "lmerTest" packages.
 License: GPL-2 | GPL-3
 Depends:R (>= 3.0.0)
 Imports: lmerTest, gmodels, lattice, mvtnorm, lme4
 Suggests: rgl
 LazyLoad: yes
-
