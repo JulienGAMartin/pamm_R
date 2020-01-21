@@ -169,19 +169,19 @@ SSF <- function(numsim, tss, nbstep = 10, randompart, fixed = c(0, 1, 0), n.X = 
     iD[kk] <- mg.r[k, 1]
     rp[kk] <- round(N/mg.r[k, 1], digits = 2)
     ss[kk] <- N
-    slCIpow <- ci(powersl, na.rm = TRUE)
+    slCIpow <- ci.p(powersl, na.rm = TRUE)
     slpowestimate[kk] <- slCIpow["Estimate"]
     slpowCIlower[kk] <- slCIpow["CI lower"]
     slpowCIupper[kk] <- slCIpow["CI upper"]
-    slCIpval <- ci(pvalsl, na.rm = TRUE)
+    slCIpval <- ci.p(pvalsl, na.rm = TRUE)
     slpvalestimate[kk] <- slCIpval["Estimate"]
     slpvalCIlower[kk] <- slCIpval["CI lower"]
     slpvalCIupper[kk] <- slCIpval["CI upper"]
-    intCIpow <- ci(powerint, na.rm = TRUE)
+    intCIpow <- ci.p(powerint, na.rm = TRUE)
     intpowestimate[kk] <- intCIpow["Estimate"]
     intpowCIlower[kk] <- intCIpow["CI lower"]
     intpowCIupper[kk] <- intCIpow["CI upper"]
-    intCIpval <- ci(pvalint, na.rm = TRUE)
+    intCIpval <- ci.p(pvalint, na.rm = TRUE)
     intpvalestimate[kk] <- intCIpval["Estimate"]
     intpvalCIlower[kk] <- intCIpval["CI lower"]
     intpvalCIupper[kk] <- intCIpval["CI upper"]
