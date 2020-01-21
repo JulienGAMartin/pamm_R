@@ -134,7 +134,7 @@ SSF <- function(numsim, tss, nbstep = 10, randompart, fixed = c(0, 1, 0), n.X = 
         (for (n in 1:N) {
           er[n] <- rnorm(1, intercept, sqrt(VR * exp(2 * het[1] * EF[n])))
         })
-      
+
       db <- data.frame(ID = rep(1:mg.r[k, 1], mg.r[k, 2])[1:N], obs = 1:N,
         error = er, EF = EF)
       x <- rmvnorm(mg.r[k, 1], c(0, 0), sigma, method = "svd")
@@ -148,7 +148,7 @@ SSF <- function(numsim, tss, nbstep = 10, randompart, fixed = c(0, 1, 0), n.X = 
         pvalint[i] <- NA
       } else {
         lrt1 <- rand(m1.lmer)
-        pvint <- lrt1[[1]][1, 3]
+        pvint <- lrt1[2, 6]
         powerint[i] <- pvint <= 0.05
         pvalint[i] <- pvint
       }

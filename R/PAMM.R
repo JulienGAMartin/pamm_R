@@ -143,7 +143,7 @@ PAMM <- function(numsim, group, repl, randompart, fixed = c(0, 1, 0), n.X = NA, 
           pvalint[i] <- NA
         } else {
           lrt1 <- rand(m1.lmer)
-          pvint <- lrt1[[1]][1, 3]
+          pvint <- lrt1[2, 6]
           powerint[i] <- pvint <= 0.05
           pvalint[i] <- pvint
         }

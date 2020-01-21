@@ -3,7 +3,7 @@ EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0
   X.dist = "gaussian", intercept = 0, heteroscedasticity = c("null"), mer.sim = TRUE,
   mer.model = NULL) {
   o.warn <- getOption("warn")
-  
+
   M <- NULL
   if (is.null(mer.model)) {
     Hetero <- heteroscedasticity[[1]]
@@ -171,7 +171,7 @@ EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0
             pvalint[i] <- NA
             } else {
             lrt1 <- rand(m1.lmer)
-            pvint <- lrt1[[1]][1, 3]
+            pvint <- lrt1[2, 6]
             powerint[i] <- pvint <= 0.05
             pvalint[i] <- pvint
             }
@@ -245,7 +245,7 @@ EAMM <- function(numsim, group, repl, fixed = c(0, 1, 0), VI = seq(0.05, 0.95, 0
             pvalint[i] <- NA
             } else {
             lrt1 <- rand(m.nosl)
-            pvint <- lrt1[[1]][1, 3]
+            pvint <- lrt1[2,6]
             powerint[i] <- pvint <= 0.05
             pvalint[i] <- pvint
             }
