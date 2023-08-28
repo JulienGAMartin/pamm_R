@@ -26,7 +26,7 @@
 #' @param X.dist specify the distribution of the fixed effect. Only "gaussian" (normal distribution) and
 #'    "unif" (uniform distribution) are accepted actually. Default: \code{"gaussian"}
 #'
-#' @param intercepta numeric value giving the expected intercept value. Default:0
+#' @param intercept a numeric value giving the expected intercept value. Default:0
 #' @param exgr a vector specifying minimum and maximum value for number of group.
 #'   Default:\code{c(2,tss/2)}
 #' @param exrepl a vector specifying minimum and maximum value for number

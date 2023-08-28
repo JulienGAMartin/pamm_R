@@ -9,14 +9,16 @@
 \arguments{
 \item{x}{an SSF object}
 
-\item{\dots}{potentially further arguments to pass to methods
-
-\examples
-\dontrun{
-   oursSSF <- SSF(50,100,10,c(0.4,0.1,0.6,0))
-   plot(oursSSF)
-   }}
+\item{\dots}{potentially further arguments to pass to methods}
 }
 \description{
 Provide graphic interpretation of the simulation results
+}
+\examples{
+\dontrun{
+   oursSSF <- SSF(50,100,10,c(0.4,0.1,0.6,0))
+   plot(oursSSF)
+   }
+
+
 }

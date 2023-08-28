@@ -45,6 +45,8 @@ If \code{NA}, all values of X are independent between groups. If the value speci
 \item{X.dist}{specify the distribution of the fixed effect. Only "gaussian" (normal distribution) and
 "unif" (uniform distribution) are accepted actually. Default: \code{"gaussian"}}
 
+\item{intercept}{a numeric value giving the expected intercept value. Default:0}
+
 \item{exgr}{a vector specifying minimum and maximum value for number of group.
 Default:\code{c(2,tss/2)}}
 
@@ -63,8 +65,6 @@ of replicates. Default:\code{c(2,tss/2)}}
 denote the variance function evaluated at \eqn{v}, the exponential
 variance function is defined as \eqn{\sigma^2(v) = e^{2 * \theta * v}s2(v) = exp(2* t * v)}, where \eqn{\thetat} is the variance
 function coefficient.}
-
-\item{intercepta}{numeric value giving the expected intercept value. Default:0}
 }
 \value{
 data frame reporting estimated P-values and power with CI for random

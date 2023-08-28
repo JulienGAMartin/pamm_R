@@ -1,8 +1,8 @@
 Package: pamm
 Type: Package
 Title: Power Analysis for Random Effects in Mixed Models
-Version: 1.121
-Date: 2020-01-21
+Version: 1.122
+Date: 2023-08-28
 Authors@R: person("Julien","Martin", email = "julien.martin@uottawa.ca",
   role = c("aut", "cre"))
 URL: https://github.com/JulienGAMartin/pamm_R

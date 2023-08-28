@@ -6,7 +6,7 @@
 #' @param x an SSF object 
 #' @param \dots potentially further arguments to pass to methods
 #' 
-#' \examples
+#' @examples
 #' \dontrun{
 #'    oursSSF <- SSF(50,100,10,c(0.4,0.1,0.6,0))
 #'    plot(oursSSF)
