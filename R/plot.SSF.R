@@ -1,3 +1,21 @@
+#' Graphic output of the PAMM function
+#' 
+#' Provide graphic interpretation of the simulation results
+#' 
+#' 
+#' @param x an SSF object 
+#' @param \dots potentially further arguments to pass to methods
+#' 
+#' \examples
+#' \dontrun{
+#'    oursSSF <- SSF(50,100,10,c(0.4,0.1,0.6,0))
+#'    plot(oursSSF)
+#'    }
+#' 
+#' 
+#' @export
+
+
 plot.SSF <- function(x, ...) {
   if (!inherits(x, "SSF"))
     stop("use only with \"SSF\" xs")

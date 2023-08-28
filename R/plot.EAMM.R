@@ -1,3 +1,36 @@
+#' Graphic output of the EAMM function 
+#' 
+#' Provide graphic interpretation of the simulation results
+#' 
+#'  @param x  an EAMM object
+#'  @param graphtype  "VI", "VS", or "both"
+#'     "VI" give graphs with varying variance component of intercept and
+#'     with a fixed variance component for slope specified in vs argument
+#'     "VS" give graphs with varying variance component for slope and with a
+#'     fixed variance component of intercept specified in vi argument
+#'     "both" 3-D plot see also fun3D argument
+#'     
+#'  @param vi  VI for which plots the output. Necessary for "VS" type of graph 
+#'  @param vs  VS for which plots the output. Necessary for "VI" type of graph 
+#'  @param fun3D plot function used to plot the 3D graph.
+#'   	"wireframe" uses lattice,
+#'   	"persp" uses  graphics,
+#'   	and "open3d" uses rgl.
+#'  @param \dots  potentially further arguments to pass to methods 
+#' 
+#' 
+#' @examples
+#' \dontrun{
+#'   ours <- EAMM(numsim=10, group=10, repl=4,
+#'                VI=seq(0.1,0.95,0.05), VS=c(0.05,0.1) )
+#'   plot(ours, "both")
+#'   plot(ours, "VI",vs=0.1)
+#'   plot(ours,"VS",vi=0.2)
+#'    }
+#' 
+#' @export
+
+
 plot.EAMM <- function(x, graphtype = "both", vi, vs, fun3D = "wireframe", ...) {
   if (!inherits(x, "EAMM"))
     stop("use only with \"EAMM\" objects")
